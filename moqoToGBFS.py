@@ -23,6 +23,8 @@ CARGO_BIKE_MODELS = {'E-Trike Babboe Curve-E'}
 configs = {
 	'BARshare': {
 		'publication_base_url': 'https://data.mfdz.de/gbfs/barshare',
+		'team_id': '460276220',
+		'team_id_bike': '514091075',
 		'system_information_data' : { 
 			"language": "de-DE",
 			"name": "BARshare Barnim",
@@ -256,7 +258,7 @@ def extract_from_vehicles(data, status, station_infos, vehicles, vehicle_types):
 			'is_reserved': True,
 			'is_disabled': False,
 			'vehicle_type_id': vehicle_type_id,
-			'station_id': str(station_id),
+			'station_id': str(station_id)
 		}
 		if vehicle.get('cruising_range') != None and vehicle['cruising_range'].get('value'):
 			gbfs_vehicle['current_range_meters'] = vehicle['cruising_range']['value']['cents'] * 1000
@@ -442,8 +444,41 @@ def filter_by_form_factor(info_orig, status_orig, vehicle_types_orig, vehicles_o
 	pricing_plans = list(filter(lambda pricing_plan: pricing_plan["plan_id"] in required_pricing_plans, pricing_plans_orig))
 	return info, status, vehicle_types, vehicles, pricing_plans
 
-def write_gbfs_feed(config, destFolder, info, status, vehicle_types, vehicles, form_factor = None):
-	base_url = config['publication_base_url']
+def propagate_rental_uris(vehicles, info):
+	### For stations without rental_uris, we will assign the rental_uris of an associated vehicle
+	### Currently, there is no precedence order, so it could be a reservered vehicle or a vehicle
+	### of a random form_factor
+	station_rental_uris = {}
+	# Collect rental_uris by station_id
+	for key in vehicles:
+		vehicle = vehicles[key]
+		station_id = vehicle.get("station_id")
+
+		if station_id and (not station_id in station_rental_uris or not
+			(vehicle.get("is_reserved") or vehicle.get("is_disabled"))):
+			station_rental_uris[station_id] = copy.deepcopy(vehicle.get("rental_uris"))
+	# Add rental_uris to stations
+	for station in info:
+		station_id = station['station_id']
+		if station_rental_uris.get(station_id):
+			station['rental_uris'] = station_rental_uris.get(station_id)
+		else:
+			station.pop('rental_uris', None)
+def update_rental_uris(vehicle_types, vehicles, info, team_car_id, team_id_bike):
+	for key in vehicles:
+		vehicle = vehicles[key]
+		vehicle_id = vehicle['bike_id']
+		vehicle_type = vehicle_types.get(vehicle['vehicle_type_id'])
+		team_id = team_car_id if vehicle_type['form_factor'] == 'car' else team_id_bike
+		rental_uri = 'https://go.moqo.de/deeplink/createBooking?teamId={}&carId={}'.format(team_id, vehicle_id)
+		vehicle['rental_uris'] = {
+			'ios': rental_uri,
+			'android': rental_uri,
+			'web': rental_uri
+		}
+
+def write_gbfs_feed(config, destFolder, info, status, vehicle_types, vehicles, base_url, form_factor = None):
+	base_url = base_url or config['publication_base_url']
 	pricing_plans = config.get('pricing_plans')
 	system_information = copy.deepcopy(config['system_information_data'])
 	if form_factor:
@@ -452,7 +487,8 @@ def write_gbfs_feed(config, destFolder, info, status, vehicle_types, vehicles, f
 		Path(destFolder).mkdir(parents=True, exist_ok=True)
 		(info, status, vehicle_types, vehicles, pricing_plans) = filter_by_form_factor(info, status, vehicle_types, vehicles, pricing_plans, form_factor)
 		system_information["system_id"] = system_information["system_id"]+"-"+form_factor
-		
+	
+	propagate_rental_uris(vehicles, info)
 	timestamp = int(datetime.timestamp(datetime.now()))
 	write_gbfs_file(destFolder + "/gbfs.json", gbfs_data(base_url) , timestamp)
 	write_gbfs_file(destFolder + "/station_information.json", {"stations": info} , timestamp)
@@ -465,18 +501,21 @@ def write_gbfs_feed(config, destFolder, info, status, vehicle_types, vehicles, f
 
 def main(args, config):
 	destFolder=  args.outputDir
-	(info, status, vehicle_types, vehicles) = load_stations(args.token, args.baseUrl)
-	write_gbfs_feed(config, destFolder, info, status, vehicle_types, vehicles, "car")
-	write_gbfs_feed(config, destFolder, info, status, vehicle_types, vehicles, "bicycle")
-	write_gbfs_feed(config, destFolder, info, status, vehicle_types, vehicles, "other")
-	write_gbfs_feed(config, destFolder, info, status, vehicle_types, vehicles)
+	(info, status, vehicle_types, vehicles) = load_stations(args.token, args.serviceUrl)
+	update_rental_uris(vehicle_types, vehicles, info, config['team_id'], config['team_id_bike'])
+	write_gbfs_feed(config, destFolder, info, status, vehicle_types, vehicles, args.baseUrl, form_factor = "car")
+	write_gbfs_feed(config, destFolder, info, status, vehicle_types, vehicles, args.baseUrl, form_factor = "bicycle")
+	write_gbfs_feed(config, destFolder, info, status, vehicle_types, vehicles, args.baseUrl, form_factor = "other")
+	write_gbfs_feed(config, destFolder, info, status, vehicle_types, vehicles, args.baseUrl)
 		
 if __name__ == '__main__':
 	parser = ArgumentParser()
 	parser.add_argument("-o", "--outputDir", help="output directory the transformed files are written to", default="out")
-	parser.add_argument("-b", "--baseUrl", required=True, help="baseUrl for service")
+	parser.add_argument("-s", "--serviceUrl", required=True, help="url for sharing provider service")
 	parser.add_argument("-t", "--token", required=True, help="token for service")
 	parser.add_argument("-c", "--config", required=True, help="service provider")
+	parser.add_argument("-b", "--baseUrl", required=False, help="baseUrl this feed will be published under")
+	
 	args = parser.parse_args()
 
 	main(args, configs[args.config])
