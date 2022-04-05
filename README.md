@@ -15,15 +15,15 @@ Note: Not every GBFS information can be retrieved from the API. The content of  
 ## Using Docker
 
 ```sh
-docker build -t mfdz/moqo2gbfs
-run -v $PWD/out:/usr/src/app/out mfdz/moqo2gbfs moqoToGBFS.py -t <secret> -b https://portal.moqo.de/api_aggregator/ -c BARshare
-
+docker build -t mfdz/moqo2gbfs .
+docker run --rm -v $PWD/out:/usr/src/app/out mfdz/moqo2gbfs moqoToGBFS.py -t <secret> -b https://data.mfdz.de/gbfs/barshare -s https://portal.moqo.de/api_aggregator/ -c BARshare
 ```
 
 ## Documentation
 
-MOQO-API-Documentation is available here 
-https://source.digital-mobility.solutions/moqo-public/aggregator-api/-/blob/master/aggregator_openapi.yaml nachlesbar.
+MOQO-API-Documentation is available here:
+https://source.digital-mobility.solutions/moqo-public/aggregator-api/-/blob/master/aggregator_openapi.yaml
+
 
 
 
