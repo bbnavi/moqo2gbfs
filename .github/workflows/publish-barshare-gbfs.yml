@@ -41,6 +41,12 @@ jobs:
       MINIO_SECRET_KEY: "${{ secrets.MINIO_SECRET_KEY }}"
     steps:
       - uses: actions/checkout@v2
+      # https://twitter.com/derhuerst/status/1511660213111336961
+      - name: inline env vars to work around quantum-cli support
+        run: |
+          cd publish-barshare-gbfs
+          apk add --no-cache --upgrade docker-compose moreutils
+          docker-compose -f quantum-stack.yml config | sponge quantum-stack.yml
       - name: deploy to bbnavi infrastructure
         run: |
           cd publish-barshare-gbfs
