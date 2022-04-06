@@ -13,6 +13,7 @@ RUN apk add --no-cache --update tree
 COPY --from=mc /usr/bin/mc /usr/bin/mc
 
 COPY main.sh ./
+COPY index.html ./
 
 # prevent inheriting `python` as entrypoint
 ENTRYPOINT []

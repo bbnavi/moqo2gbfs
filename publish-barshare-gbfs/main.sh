@@ -25,6 +25,8 @@ dir="$(mktemp -d -t barshare-gbfs.XXXXXX)"
 
 set -x
 
+mc cp -q index.html bbnavi/barshare/
+
 while true; do
 	# We sleep first so that, if the GBFS generation fails contantly, we don't DOS the Moqo API.
 	sleep "$PUBLISH_INTERVAL"
