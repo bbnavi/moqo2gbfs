@@ -484,9 +484,12 @@ def write_gbfs_feed(config, destFolder, info, status, vehicle_types, vehicles, b
 	if form_factor:
 		base_url = "{}/{}".format(base_url, form_factor)
 		destFolder = "{}/{}".format(destFolder, form_factor)
-		Path(destFolder).mkdir(parents=True, exist_ok=True)
 		(info, status, vehicle_types, vehicles, pricing_plans) = filter_by_form_factor(info, status, vehicle_types, vehicles, pricing_plans, form_factor)
 		system_information["system_id"] = system_information["system_id"]+"-"+form_factor
+	else:
+		base_url = "{}/{}".format(base_url, 'all')
+		destFolder = "{}/{}".format(destFolder, 'all')
+	Path(destFolder).mkdir(parents=True, exist_ok=True)
 	
 	propagate_rental_uris(vehicles, info)
 	timestamp = int(datetime.timestamp(datetime.now()))
