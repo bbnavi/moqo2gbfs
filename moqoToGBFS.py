@@ -22,7 +22,7 @@ CARGO_BIKE_MODELS = {'E-Trike Babboe Curve-E'}
 
 configs = {
 	'BARshare': {
-		'publication_base_url': 'https://data.mfdz.de/gbfs/barshare',
+		'publication_base_url': 'https://opendata.bbnavi.de/barshare',
 		'team_id': '460276220',
 		'team_id_bike': '514091075',
 		'system_information_data' : { 
@@ -34,7 +34,7 @@ configs = {
 			"url": "https://www.barshare.de/",
 			"purchase_url": "https://portal.moqo.de/js_sign_up/barshare#/team-selection",
 			"email": "support@moqo.de",
-			"feed_contact_email": "info@mfdz.de",
+			"feed_contact_email": "kontakt@digital-agentur.de",
 			"terms_url": "https://barshare.de/images/page/download/Agb_07_2020.pdf",
 			"terms_last_updated": "2020-07-01",
 			"privacy_url": "https://barshare.de/datenschutz",
