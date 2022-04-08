@@ -4,7 +4,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>BARShare Open Data</title>
+	<title>BARshare Open Data</title>
 	<style type="text/css">
 		body {
 			margin: 1rem;
@@ -18,12 +18,22 @@
 		footer {
 			margin-top: 5rem;
 		}
+		a {
+			text-decoration: none;
+		}
+		a:hover, a:focus, a:active {
+			text-decoration: underline;
+		}
 		a, a:visited {
 			color: #da1b1b;
 		}
 		h1, h2, h3 {
 			font-weight: 500;
 			margin-bottom: .8em;
+		}
+		header {
+			padding-bottom: 1em;
+			border-bottom: 1px solid #ddd;
 		}
 		#bbnavi-logo {
 			display: inline-block;
@@ -34,6 +44,19 @@
 			display: inline-block;
 			width: 3rem;
 			vertical-align: bottom;
+		}
+		#barshare-logo {
+			max-height: 3rem;
+			vertical-align: text-bottom;
+			position: relative;
+			top: -.3rem;
+		}
+		footer {
+			padding-top: 1em;
+			border-top: 1px solid #ddd;
+		}
+		footer > :first-child {
+			margin-top: 0;
 		}
 		footer ul {
 			list-style: none;
@@ -55,8 +78,10 @@
 			</svg>
 			bbnavi
 		</a>
-		<h1>BARShare Open Data</h1>
 	</header>
+	<h1>
+		<a href="https://www.barshare.de" rel="noreferrer noopener"><img id="barshare-logo" src="barshare-logo.png" alt="Logo BARshare" /></a> Open Data
+	</h1>
 	<h2>GBFS-Feeds mit Verfügbarkeit von Leihfahrrädern & -autos</h2>
 	<p><a href="https://github.com/NABSA/gbfs/blob/v2.2/README.md" rel="noreferrer noopener">Mehr Informationen zum GBFS-Format (Englisch)</a></p>
 	<h3>Feed mit <em>allen</em> Fahrzeugen</h3>
