@@ -464,7 +464,7 @@ def propagate_rental_uris(vehicles, info):
 			station['rental_uris'] = station_rental_uris.get(station_id)
 		else:
 			station.pop('rental_uris', None)
-def update_rental_uris(vehicle_types, vehicles, info, team_car_id, team_id_bike):
+def update_rental_uris(vehicle_types, vehicles, info, team_car_id, team_id_bike, web_rental_uri):
 	for key in vehicles:
 		vehicle = vehicles[key]
 		vehicle_id = vehicle['bike_id']
@@ -474,7 +474,7 @@ def update_rental_uris(vehicle_types, vehicles, info, team_car_id, team_id_bike)
 		vehicle['rental_uris'] = {
 			'ios': rental_uri,
 			'android': rental_uri,
-			'web': rental_uri
+			'web': web_rental_uri
 		}
 
 def write_gbfs_feed(config, destFolder, info, status, vehicle_types, vehicles, base_url, form_factor = None):
@@ -505,7 +505,13 @@ def write_gbfs_feed(config, destFolder, info, status, vehicle_types, vehicles, b
 def main(args, config):
 	destFolder=  args.outputDir
 	(info, status, vehicle_types, vehicles) = load_stations(args.token, args.serviceUrl)
-	update_rental_uris(vehicle_types, vehicles, info, config['team_id'], config['team_id_bike'])
+	update_rental_uris(
+		vehicle_types, 
+		vehicles, 
+		info, 
+		config['team_id'], 
+		config['team_id_bike'], 
+		config['system_information_data']['url'])
 	write_gbfs_feed(config, destFolder, info, status, vehicle_types, vehicles, args.baseUrl, form_factor = "car")
 	write_gbfs_feed(config, destFolder, info, status, vehicle_types, vehicles, args.baseUrl, form_factor = "bicycle")
 	write_gbfs_feed(config, destFolder, info, status, vehicle_types, vehicles, args.baseUrl, form_factor = "other")
