@@ -221,7 +221,7 @@ def get_or_create_virtual_station(location, station_infos, status):
 			"lon": location['lng'],
 			'name': location['name'] if location['name'] else virtual_station_id,
 			'station_id': virtual_station_id,
-			'addresss': location['street'],
+			'address': location['street'],
 			'post_code': location['postcode'],
 			'city': location['city'], # Non-standard
 			'rental_methods': ['key'],
