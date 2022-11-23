@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - quantum-cli
 
 jobs:
   build:
@@ -41,6 +42,12 @@ jobs:
       MINIO_SECRET_KEY: "${{ secrets.MINIO_SECRET_KEY }}"
     steps:
       - uses: actions/checkout@v2
+      - name: debug CI
+        run: |
+          set -e
+          set -x
+          env | grep -o MOQO
+          env | grep -o MINIO
       - name: deploy to bbnavi infrastructure
         run: |
           cd publish-barshare-gbfs
