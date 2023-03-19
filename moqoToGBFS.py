@@ -6,7 +6,7 @@ from xml.etree import ElementTree as ET
 import json
 import os
 from datetime import datetime, timedelta
-import csv
+from functools import reduce
 import requests
 import logging
 from pathlib import Path
@@ -50,92 +50,92 @@ configs = {
 			}	
 		},
 		'pricing_plans': [
-			{
-				"plan_id": "mitnutzer_kleinwagen",
-				"url": "https://www.barshare.de/barshare-preise-tarife",
-				"name": "Mitnutzer-Tarif Kleinwagen",
-				"currency": "EUR",
+		  {
+			"plan_id": "mitnutzer_kleinwagen",
+			"url": "https://www.barshare.de/barshare-preise-tarife",
+			"name": "Mitnutzer-Tarif Kleinwagen",
+			"currency": "EUR",
 			"price": 0,
-				"is_taxable": False,
+			"is_taxable": False,
 			"description": "Standard Tarif Mitnutzer. Einmalige Anmeldegebühren. 15 Cent pro Kilometer (inkl. Stromkosten f\u00fcr die Nutzung des emobility Ladenetzes Barnim), 5,90\u20ac pro Stunde. Jede erste Stunde eines neuen Stundentarifs wird jeweils voll berechnet, ab der zweiten Stunde erfolgt eine Abrechnung alle 15 Minuten. Die hier angegebenen Tarife entsprechen den Bruttopreisen in Euro inklusive der jeweils g\u00fcltigen Umsatzsteuer (z.Zt. 19%).",
-				"per_km_pricing": [
-				  {
-					"start": 0,
+			"per_km_pricing": [
+			  {
+				"start": 0,
 				"rate": 0.15,
-					"interval": 1
-				  }
-				],
-				"per_min_pricing": [
-					{
-						"start": 0,
-				"rate": 5.9,
-						"interval": 60,
-						"end": 60
-					},
-					{
-						"start": 60,
-				"rate": 1.475,
-						"interval": 15
-					}
-				]
-	  		},
-			{
-				"plan_id": "mitnutzer_van",
-				"url": "https://www.barshare.de/barshare-preise-tarife",
-				"name": "Mitnutzer-Tarif Van",
-				"currency": "EUR",
-			"price": 0,
-				"is_taxable": False,
-			"description": "Standard Tarif Mitnutzer. Einmalige Anmeldegebühren. 15 Cent pro Kilometer (inkl. Stromkosten f\u00fcr die Nutzung des emobility Ladenetzes Barnim), 6,90\u20ac pro Stunde. Jede erste Stunde eines neuen Stundentarifs wird jeweils voll berechnet, ab der zweiten Stunde erfolgt eine Abrechnung alle 15 Minuten. Die hier angegebenen Tarife entsprechen den Bruttopreisen in Euro inklusive der jeweils g\u00fcltigen Umsatzsteuer (z.Zt. 19%).",
-				"per_km_pricing": [
-				  {
-					"start": 0,
-					"rate": 0.1,
-				"interval": 15
-				  }
-				],
-				"per_min_pricing": [
-					{
-						"start": 0,
-				"rate": 6.9,
-						"interval": 60,
-						"end": 60
-					},
-					{
-						"start": 60,
-				"rate": 1.725,
-						"interval": 15
+				"interval": 1
 			  }
-				]
-			},
-			{
-				"plan_id": "mitnutzer_bike",
-				"url": "https://www.barshare.de/barshare-preise-tarife",
-				"name": "Mitnutzer-Tarif Bike",
-				"currency": "EUR",
+			],
+			"per_min_pricing": [
+			  {
+				"start": 0,
+				"rate": 5.9,
+				"interval": 60,
+				"end": 60
+			  },
+			  {
+				"start": 60,
+				"rate": 1.475,
+				"interval": 15
+			  }
+			]
+		  },
+		  {
+			"plan_id": "mitnutzer_van",
+			"url": "https://www.barshare.de/barshare-preise-tarife",
+			"name": "Mitnutzer-Tarif Van",
+			"currency": "EUR",
 			"price": 0,
-				"is_taxable": False,
+			"is_taxable": False,
+			"description": "Standard Tarif Mitnutzer. Einmalige Anmeldegebühren. 15 Cent pro Kilometer (inkl. Stromkosten f\u00fcr die Nutzung des emobility Ladenetzes Barnim), 6,90\u20ac pro Stunde. Jede erste Stunde eines neuen Stundentarifs wird jeweils voll berechnet, ab der zweiten Stunde erfolgt eine Abrechnung alle 15 Minuten. Die hier angegebenen Tarife entsprechen den Bruttopreisen in Euro inklusive der jeweils g\u00fcltigen Umsatzsteuer (z.Zt. 19%).",
+			"per_km_pricing": [
+			  {
+				"start": 0,
+				"rate": 0.1,
+				"interval": 15
+			  }
+			],
+			"per_min_pricing": [
+			  {
+				"start": 0,
+				"rate": 6.9,
+				"interval": 60,
+				"end": 60
+			  },
+			  {
+				"start": 60,
+				"rate": 1.725,
+				"interval": 15
+			  }
+			]
+		  },
+		  {
+			"plan_id": "mitnutzer_bike",
+			"url": "https://www.barshare.de/barshare-preise-tarife",
+			"name": "Mitnutzer-Tarif Bike",
+			"currency": "EUR",
+			"price": 0,
+			"is_taxable": False,
 			"description": "Standard Tarif Mitnutzer. Einmalige Registrierungsgebühren (1€) und nutzungsabhängiger Tarif. Die hier angegebenen Tarife entsprechen den Bruttopreisen in Euro inklusive der jeweils g\u00fcltigen Umsatzsteuer (z.Zt. 19%).",
-				"per_min_pricing": [
-					{
-						"start": 0,
+			"per_min_pricing": [
+			  {
+				"start": 0,
 				"rate": 3,
-						"interval": 60,
+				"interval": 60,
 				"end": 400
-					},
-					{
+			  },
+			  {
 				"start": 400,
-						"rate": 0,
-						"interval": 60,
+				"rate": 0,
+				"interval": 60,
 				"end": 1440
-					},
-					{
+			  },
+			  {
 				"start": 1440,
 				"rate": 20,
 				"interval": 1440
-					}
-				]
-			}
+			  }
+			]
+		  }
 		]
 	}
 }
@@ -274,13 +274,13 @@ def update_availability_status(data, status, vehicles):
 		vehicles[vehicle_id]['is_reserved'] = False
 	
 		station_id = get_station_id(vehicle['location'])
-		station_info = status.get(station_id)
-		if station_info:
-			vehicle_type_id = vehicle['label']
-			if not station_info["vehicle_types_available"].get(vehicle_type_id):
-				station_info["vehicle_types_available"][vehicle_type_id] = 0
-			station_info["vehicle_types_available"][vehicle_type_id] += 1
-			station_info["num_bikes_available"] += 1
+		station_status = status.get(station_id)
+		if station_status:
+			vehicle_type_id = extract_vehicle_model(vehicle)
+			if not station_status["vehicle_types_available"].get(vehicle_type_id):
+				station_status["vehicle_types_available"][vehicle_type_id] = 0
+			station_status["vehicle_types_available"][vehicle_type_id] += 1
+			station_status["num_bikes_available"] += 1
 		else:
 			logger.warning("No station status for %s (%s), assume free floating", vehicle_id, station_id)
 			vehicles[vehicle_id].pop('station_id', None)
@@ -402,34 +402,30 @@ def gbfs_data(base_url):
 		}}
 	return gbfs_data
 
+def vehicle_types_available_as_array(vehicle_types_available_dict):
+	return [{
+			"vehicle_type_id": vt,
+			"count": vehicle_types_available_dict[vt]
+			} for vt in vehicle_types_available_dict]
 
-def station_with_available_vehicles_array(station, vehicle_types_orig, form_factor):
+def status_with_available_vehicles_array(station, vehicle_types_orig, form_factor):
 	new_station = copy.deepcopy(station)
-	vehicle_types_available = []
-	num_vehicles_available = 0
-	for available_type in new_station["vehicle_types_available"]:
-		if vehicle_types_orig[available_type]["form_factor"] == form_factor:
-			num_available_types = new_station["vehicle_types_available"][available_type]
-			vehicle_types_available.append({
-				"vehicle_type_id": available_type,
-				"count": num_available_types
-				})
-			num_vehicles_available += num_available_types
+
+	vehicle_types_available = vehicle_types_available_as_array(station["vehicle_types_available"])
 	new_station["vehicle_types_available"] = vehicle_types_available
+	num_vehicles_available = reduce((lambda x, y: x + y), [vt["count"] for vt in vehicle_types_available], 0)
 	new_station["num_bikes_available"] = num_vehicles_available
 
 	return new_station
 
-def filter_by_form_factor(info_orig, status_orig, vehicle_types_orig, vehicles_orig, pricing_plans_orig, form_factor):
+def filter_by_form_factor(info_orig, status_orig, vehicle_types_orig, vehicles_orig, pricing_plans_orig, form_factor_filter = None):
 	
-	status = []
-	form_factor_map = {}
 	vehicle_types = {}
 	vehicles = {}
 	required_stations = set()
 	required_pricing_plans = set()
 	for key in vehicle_types_orig:
-		if vehicle_types_orig[key]["form_factor"] == form_factor:
+		if form_factor_filter == None or vehicle_types_orig[key]["form_factor"] == form_factor_filter:
 			vehicle_types[key]= vehicle_types_orig[key]
 			required_pricing_plans.add(vehicle_types[key].get("default_pricing_plan_id"))
 	for key in vehicles_orig:
@@ -438,14 +434,14 @@ def filter_by_form_factor(info_orig, status_orig, vehicle_types_orig, vehicles_o
 			vehicles[key] = vehicle
 			required_stations.add(vehicle.get("station_id"))
 	
-	info = list(filter(lambda station: station["station_id"] in required_stations, info_orig))
-	for station in status_orig:
-		if station["station_id"] not in required_stations:
-			continue
-		status.append(station_with_available_vehicles_array(station, vehicle_types_orig, form_factor))
-	
+	station_info = list(filter(lambda station: station["station_id"] in required_stations, info_orig))
 	pricing_plans = list(filter(lambda pricing_plan: pricing_plan["plan_id"] in required_pricing_plans, pricing_plans_orig))
-	return info, status, vehicle_types, vehicles, pricing_plans
+	
+	station_status = []
+	for status in list(filter(lambda status: status["station_id"] in required_stations, status_orig)):
+		station_status.append(status_with_available_vehicles_array(status, vehicle_types_orig, form_factor_filter))
+	
+	return station_info, station_status, vehicle_types, vehicles, pricing_plans
 
 def propagate_rental_uris(vehicles, info):
 	### For stations without rental_uris, we will assign the rental_uris of an associated vehicle
@@ -467,6 +463,7 @@ def propagate_rental_uris(vehicles, info):
 			station['rental_uris'] = station_rental_uris.get(station_id)
 		else:
 			station.pop('rental_uris', None)
+
 def update_rental_uris(vehicle_types, vehicles, info, team_car_id, team_id_bike, web_rental_uri):
 	for key in vehicles:
 		vehicle = vehicles[key]
@@ -479,19 +476,21 @@ def update_rental_uris(vehicle_types, vehicles, info, team_car_id, team_id_bike,
 			'android': rental_uri,
 			'web': web_rental_uri
 		}
-
+	
 def write_gbfs_feed(config, destFolder, info, status, vehicle_types, vehicles, base_url, form_factor = None):
 	base_url = base_url or config['publication_base_url']
 	pricing_plans = config.get('pricing_plans')
 	system_information = copy.deepcopy(config['system_information_data'])
+	(info, status, vehicle_types, vehicles, pricing_plans) = filter_by_form_factor(info, status, vehicle_types, vehicles, pricing_plans, form_factor)
+	
 	if form_factor:
 		base_url = "{}/{}".format(base_url, form_factor)
-		destFolder = "{}/{}".format(destFolder, form_factor)
-		(info, status, vehicle_types, vehicles, pricing_plans) = filter_by_form_factor(info, status, vehicle_types, vehicles, pricing_plans, form_factor)
+		destFolder = "{}/{}".format(destFolder, form_factor)		
 		system_information["system_id"] = system_information["system_id"]+"-"+form_factor
 	else:
 		base_url = "{}/{}".format(base_url, 'all')
 		destFolder = "{}/{}".format(destFolder, 'all')
+
 	Path(destFolder).mkdir(parents=True, exist_ok=True)
 	
 	propagate_rental_uris(vehicles, info)
