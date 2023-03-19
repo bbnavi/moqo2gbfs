@@ -402,32 +402,33 @@ def gbfs_data(base_url):
 		}}
 	return gbfs_data
 
-def vehicle_types_available_as_array(vehicle_types_available_dict):
+def vehicle_types_available_as_array(vehicle_types_available_dict, vehicle_types):
 	return [{
 			"vehicle_type_id": vt,
-			"count": vehicle_types_available_dict[vt]
-			} for vt in vehicle_types_available_dict]
+			"count": vehicle_types_available_dict.get(vt,0)
+			} for vt in vehicle_types]
 
-def status_with_available_vehicles_array(station, vehicle_types_orig, form_factor):
-	new_station = copy.deepcopy(station)
+def status_with_available_vehicles_array(status, vehicle_types, form_factor):
+	new_status = copy.deepcopy(status)
 
-	vehicle_types_available = vehicle_types_available_as_array(station["vehicle_types_available"])
-	new_station["vehicle_types_available"] = vehicle_types_available
+	vehicle_types_available = vehicle_types_available_as_array(status["vehicle_types_available"], vehicle_types)
+	new_status["vehicle_types_available"] = vehicle_types_available
 	num_vehicles_available = reduce((lambda x, y: x + y), [vt["count"] for vt in vehicle_types_available], 0)
-	new_station["num_bikes_available"] = num_vehicles_available
+	new_status["num_bikes_available"] = num_vehicles_available
 
-	return new_station
+	return new_status
 
 def filter_by_form_factor(info_orig, status_orig, vehicle_types_orig, vehicles_orig, pricing_plans_orig, form_factor_filter = None):
 	
-	vehicle_types = {}
+	vehicle_types = { k: v for (k, v) in vehicle_types_orig.items() if form_factor_filter == None or vehicle_types_orig[k]["form_factor"] == form_factor_filter}
+	
+	required_pricing_plans = set()
+	for key in vehicle_types:
+		required_pricing_plans.add(vehicle_types[key].get("default_pricing_plan_id"))
+	pricing_plans = list(filter(lambda pricing_plan: pricing_plan["plan_id"] in required_pricing_plans, pricing_plans_orig))
+	
 	vehicles = {}
 	required_stations = set()
-	required_pricing_plans = set()
-	for key in vehicle_types_orig:
-		if form_factor_filter == None or vehicle_types_orig[key]["form_factor"] == form_factor_filter:
-			vehicle_types[key]= vehicle_types_orig[key]
-			required_pricing_plans.add(vehicle_types[key].get("default_pricing_plan_id"))
 	for key in vehicles_orig:
 		vehicle = vehicles_orig[key]
 		if vehicle["vehicle_type_id"] in vehicle_types:
@@ -435,7 +436,6 @@ def filter_by_form_factor(info_orig, status_orig, vehicle_types_orig, vehicles_o
 			required_stations.add(vehicle.get("station_id"))
 	
 	station_info = list(filter(lambda station: station["station_id"] in required_stations, info_orig))
-	pricing_plans = list(filter(lambda pricing_plan: pricing_plan["plan_id"] in required_pricing_plans, pricing_plans_orig))
 	
 	station_status = []
 	for status in list(filter(lambda status: status["station_id"] in required_stations, status_orig)):
