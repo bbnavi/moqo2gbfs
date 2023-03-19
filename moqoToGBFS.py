@@ -140,10 +140,13 @@ configs = {
 	}
 }
 
+def extract_vehicle_model(vehicle):
+	return vehicle['label'].split(" (")[0]
+
 def get_form_factor(vehicle):
 	form_factor = map_car_type(vehicle['vehicle_type'])
 	if form_factor == "bicycle":
-		vehicle_model = vehicle['label']
+		vehicle_model = extract_vehicle_model(vehicle)
 		if vehicle_model in CARGO_BIKE_MODELS or 'cargo' in vehicle_model.lower() or 'lasten' in  vehicle_model.lower():
 			return "other"
 	return form_factor
@@ -199,7 +202,7 @@ def get_max_range_meters(vehicle):
 
 def extract_vehicle_type(vehicle_types, vehicle):
 	vehicle_model = vehicle['vehicle_model']
-	id = vehicle['label']
+	id = extract_vehicle_model(vehicle)
 	form_factor = get_form_factor(vehicle)
 	if not vehicle_types.get(id):
 		vehicle_types[id] = {
