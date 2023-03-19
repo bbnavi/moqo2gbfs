@@ -55,26 +55,26 @@ configs = {
 				"url": "https://www.barshare.de/barshare-preise-tarife",
 				"name": "Mitnutzer-Tarif Kleinwagen",
 				"currency": "EUR",
-				"price": 2,
+			"price": 0,
 				"is_taxable": False,
-				"description": "Standard Tarif Mitnutzer. 2€ pro Buchung, 10 Cent pro Kilometer (inkl. Stromkosten für die Nutzung des emobility Ladenetzes Barnim), 3,90€ pro Stunde. Jede erste Stunde eines neuen Stundentarifs wird jeweils voll berechnet, ab der zweiten Stunde erfolgt eine Abrechnung alle 15 Minuten. Die hier angegebenen Tarife entsprechen den Bruttopreisen in Euro inklusive der jeweils gültigen Umsatzsteuer (z.Zt. 19%).",
+			"description": "Standard Tarif Mitnutzer. Einmalige Anmeldegebühren. 15 Cent pro Kilometer (inkl. Stromkosten f\u00fcr die Nutzung des emobility Ladenetzes Barnim), 5,90\u20ac pro Stunde. Jede erste Stunde eines neuen Stundentarifs wird jeweils voll berechnet, ab der zweiten Stunde erfolgt eine Abrechnung alle 15 Minuten. Die hier angegebenen Tarife entsprechen den Bruttopreisen in Euro inklusive der jeweils g\u00fcltigen Umsatzsteuer (z.Zt. 19%).",
 				"per_km_pricing": [
 				  {
 					"start": 0,
-					"rate": 0.1,
+				"rate": 0.15,
 					"interval": 1
 				  }
 				],
 				"per_min_pricing": [
 					{
 						"start": 0,
-						"rate": 3.9,
+				"rate": 5.9,
 						"interval": 60,
 						"end": 60
 					},
 					{
 						"start": 60,
-						"rate": 0.975,
+				"rate": 1.475,
 						"interval": 15
 					}
 				]
@@ -84,28 +84,28 @@ configs = {
 				"url": "https://www.barshare.de/barshare-preise-tarife",
 				"name": "Mitnutzer-Tarif Van",
 				"currency": "EUR",
-				"price": 2,
+			"price": 0,
 				"is_taxable": False,
-				"description": "Standard Tarif Mitnutzer. 2€ pro Buchung, 10 Cent pro Kilometer (inkl. Stromkosten für die Nutzung des emobility Ladenetzes Barnim), 4,90€ pro Stunde. Jede erste Stunde eines neuen Stundentarifs wird jeweils voll berechnet, ab der zweiten Stunde erfolgt eine Abrechnung alle 15 Minuten. Die hier angegebenen Tarife entsprechen den Bruttopreisen in Euro inklusive der jeweils gültigen Umsatzsteuer (z.Zt. 19%).",
+			"description": "Standard Tarif Mitnutzer. Einmalige Anmeldegebühren. 15 Cent pro Kilometer (inkl. Stromkosten f\u00fcr die Nutzung des emobility Ladenetzes Barnim), 6,90\u20ac pro Stunde. Jede erste Stunde eines neuen Stundentarifs wird jeweils voll berechnet, ab der zweiten Stunde erfolgt eine Abrechnung alle 15 Minuten. Die hier angegebenen Tarife entsprechen den Bruttopreisen in Euro inklusive der jeweils g\u00fcltigen Umsatzsteuer (z.Zt. 19%).",
 				"per_km_pricing": [
 				  {
 					"start": 0,
 					"rate": 0.1,
-					"interval": 1
+				"interval": 15
 				  }
 				],
 				"per_min_pricing": [
 					{
 						"start": 0,
-						"rate": 4.9,
+				"rate": 6.9,
 						"interval": 60,
 						"end": 60
 					},
 					{
 						"start": 60,
-						"rate": 1.225,
+				"rate": 1.725,
 						"interval": 15
-					},
+			  }
 				]
 			},
 			{
@@ -113,26 +113,26 @@ configs = {
 				"url": "https://www.barshare.de/barshare-preise-tarife",
 				"name": "Mitnutzer-Tarif Bike",
 				"currency": "EUR",
-				"price": 1,
+			"price": 0,
 				"is_taxable": False,
-				"description": "Standard Tarif Mitnutzer. Die hier angegebenen Tarife entsprechen den Bruttopreisen in Euro inklusive der jeweils gültigen Umsatzsteuer (z.Zt. 19%).",
+			"description": "Standard Tarif Mitnutzer. Einmalige Registrierungsgebühren (1€) und nutzungsabhängiger Tarif. Die hier angegebenen Tarife entsprechen den Bruttopreisen in Euro inklusive der jeweils g\u00fcltigen Umsatzsteuer (z.Zt. 19%).",
 				"per_min_pricing": [
 					{
 						"start": 0,
-						"rate": 2,
+				"rate": 3,
 						"interval": 60,
-						"end": 360
+				"end": 400
 					},
 					{
-						"start": 360,
+				"start": 400,
 						"rate": 0,
 						"interval": 60,
-						"end": 3600
+				"end": 1440
 					},
 					{
-						"start": 3600,
-						"rate": 12,
-						"interval": 3600
+				"start": 1440,
+				"rate": 20,
+				"interval": 1440
 					}
 				]
 			}
