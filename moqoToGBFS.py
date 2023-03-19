@@ -13,7 +13,7 @@ from pathlib import Path
 
 
 logging.basicConfig()
-logging.getLogger().setLevel(logging.DEBUG)
+logging.getLogger().setLevel(logging.INFO)
 logger = logging.getLogger("moqoToGBFS")
 
 DEFAULT_MAX_RANGE_METERS = 30000
@@ -518,6 +518,7 @@ def main(args, config):
 	write_gbfs_feed(config, destFolder, info, status, vehicle_types, vehicles, args.baseUrl, form_factor = "bicycle")
 	write_gbfs_feed(config, destFolder, info, status, vehicle_types, vehicles, args.baseUrl, form_factor = "other")
 	write_gbfs_feed(config, destFolder, info, status, vehicle_types, vehicles, args.baseUrl)
+	logger.info('Updated feeds')
 		
 if __name__ == '__main__':
 	parser = ArgumentParser()
