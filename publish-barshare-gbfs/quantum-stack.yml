@@ -1,7 +1,7 @@
 version: '3.7'
 
 services:
-  opentripplanner:
+  publish-barshare-gbfs:
     image: registry.gitlab.tpwd.de/tpwd/bb-navi/publish-barshare-gbfs
     environment:
       - MOQO_ACCESS_TOKEN=${MOQO_ACCESS_TOKEN:?missing env var MOQO_ACCESS_TOKEN}
