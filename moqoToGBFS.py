@@ -408,7 +408,7 @@ def vehicle_types_available_as_array(vehicle_types_available_dict, vehicle_types
 			"count": vehicle_types_available_dict.get(vt,0)
 			} for vt in vehicle_types]
 
-def status_with_available_vehicles_array(status, vehicle_types, form_factor):
+def status_with_available_vehicles_array(status, vehicle_types):
 	new_status = copy.deepcopy(status)
 
 	vehicle_types_available = vehicle_types_available_as_array(status["vehicle_types_available"], vehicle_types)
@@ -439,7 +439,7 @@ def filter_by_form_factor(info_orig, status_orig, vehicle_types_orig, vehicles_o
 	
 	station_status = []
 	for status in list(filter(lambda status: status["station_id"] in required_stations, status_orig)):
-		station_status.append(status_with_available_vehicles_array(status, vehicle_types_orig, form_factor_filter))
+		station_status.append(status_with_available_vehicles_array(status, vehicle_types))
 	
 	return station_info, station_status, vehicle_types, vehicles, pricing_plans
 
