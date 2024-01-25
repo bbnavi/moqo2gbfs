@@ -45,28 +45,18 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-  # deploy:
-  #   runs-on: ubuntu-latest
-  #   needs:
-  #     - build
-  #   container: r.planetary-quantum.com/quantum-public/cli:2
-  #   env:
-  #     QUANTUM_USER: "${{ secrets.QUANTUM_USER }}"
-  #     QUANTUM_PASSWORD: "${{ secrets.QUANTUM_PASSWORD }}"
-  #     QUANTUM_ENDPOINT: "tpwd-bb-navi"
-  #     QUANTUM_STACK: "publish-barshare-gbfs-tpwd-bb-navi"
-  #     MOQO_ACCESS_TOKEN: "${{ secrets.MOQO_ACCESS_TOKEN }}"
-  #     MINIO_ACCESS_KEY: "${{ secrets.MINIO_ACCESS_KEY }}"
-  #     MINIO_SECRET_KEY: "${{ secrets.MINIO_SECRET_KEY }}"
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     # https://twitter.com/derhuerst/status/1511660213111336961
-  #     - name: inline env vars to work around quantum-cli support
-  #       run: |
-  #         cd publish-barshare-gbfs
-  #         apk add --no-cache --upgrade docker-compose moreutils
-  #         docker-compose -f quantum-stack.yml config | sponge quantum-stack.yml
-  #     - name: deploy to bbnavi infrastructure
-  #       run: |
-  #         cd publish-barshare-gbfs
-  #         quantum-cli stacks update --create --wait
+
+          
+  deploy:
+     runs-on: [self-hosted, deploy]
+     needs:
+       - build-and-push-image
+     env:
+       MOQO_ACCESS_TOKEN: "${{ secrets.MOQO_ACCESS_TOKEN }}"
+       MINIO_ACCESS_KEY: "${{ secrets.MINIO_ACCESS_KEY }}"
+       MINIO_SECRET_KEY: "${{ secrets.MINIO_SECRET_KEY }}"
+       steps: 
+        - uses: actions/checkout@v2
+        - name: Deploy Stack
+          run: |
+            docker stack deploy --compose-file docker-compose.yml moqo2gbfs
