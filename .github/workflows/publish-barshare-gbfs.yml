@@ -53,8 +53,8 @@ jobs:
        - build-and-push-image
      env:
        MOQO_ACCESS_TOKEN: "${{ secrets.MOQO_ACCESS_TOKEN }}"
-       MINIO_ACCESS_KEY: "${{ secrets.MINIO_ACCESS_KEY }}"
-       MINIO_SECRET_KEY: "${{ secrets.MINIO_SECRET_KEY }}"
+       MINIO_ACCESS_KEY: "${{ secrets.OPENDATA_KEY }}"
+       MINIO_SECRET_KEY: "${{ secrets.OPENDATA_SECRET }}"
      steps: 
        - uses: actions/checkout@v2
        - name: Deploy Stack
