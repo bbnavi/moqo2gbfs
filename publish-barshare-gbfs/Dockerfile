@@ -9,6 +9,7 @@ WORKDIR /usr/src/app
 
 COPY main.sh ./
 COPY index.html barshare-logo.png ./
+COPY moqoToGBFS.py ./ 
 
 ENV MOQO_ACCESS_TOKEN=""
 ENV MINIO_ACCESS_KEY="" MINIO_SECRET_KEY=""
