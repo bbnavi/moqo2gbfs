@@ -25,13 +25,13 @@ dir="$(mktemp -d -t barshare-gbfs.XXXXXX)"
 
 set -x
 
-mc cp -q index.html barshare-logo.png bbnavi/barshare/
+mcli cp -q index.html barshare-logo.png bbnavi/barshare/
 
 while true; do
 	# We sleep first so that, if the GBFS generation fails contantly, we don't DOS the Moqo API.
 	sleep "$PUBLISH_INTERVAL"
 
-	python moqoToGBFS.py \
+	python ../moqoToGBFS.py \
 		--config BARshare --serviceUrl 'https://portal.moqo.de/api_aggregator/' \
 		--baseUrl 'https://opendata.bbnavi.de/barshare' \
 		--outputDir "$dir" \
@@ -39,5 +39,5 @@ while true; do
 
 	tree -sh "$dir"
 
-	mc cp -q -r $dir/* bbnavi/barshare/
+	mcli cp -q -r $dir/* bbnavi/barshare/
 done
