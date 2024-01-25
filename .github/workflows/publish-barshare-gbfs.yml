@@ -46,7 +46,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
-          
+
   deploy:
      runs-on: [self-hosted, deploy]
      needs:
@@ -55,8 +55,8 @@ jobs:
        MOQO_ACCESS_TOKEN: "${{ secrets.MOQO_ACCESS_TOKEN }}"
        MINIO_ACCESS_KEY: "${{ secrets.MINIO_ACCESS_KEY }}"
        MINIO_SECRET_KEY: "${{ secrets.MINIO_SECRET_KEY }}"
-       steps: 
-        - uses: actions/checkout@v2
-        - name: Deploy Stack
-          run: |
-            docker stack deploy --compose-file docker-compose.yml moqo2gbfs
+     steps: 
+       - uses: actions/checkout@v2
+       - name: Deploy Stack
+         run: |
+           docker stack deploy --compose-file docker-compose.yml moqo2gbfs
