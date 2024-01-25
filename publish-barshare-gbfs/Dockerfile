@@ -3,7 +3,7 @@ FROM python:3-alpine
 
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
-RUN apk add --no-cache --update tree minio-cli
+RUN apk add --no-cache --update tree minio-client
 
 WORKDIR /usr/src/app
 
