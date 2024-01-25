@@ -31,7 +31,7 @@ while true; do
 	# We sleep first so that, if the GBFS generation fails contantly, we don't DOS the Moqo API.
 	sleep "$PUBLISH_INTERVAL"
 
-	python ../moqoToGBFS.py \
+	python moqoToGBFS.py \
 		--config BARshare --serviceUrl 'https://portal.moqo.de/api_aggregator/' \
 		--baseUrl 'https://opendata.bbnavi.de/barshare' \
 		--outputDir "$dir" \
