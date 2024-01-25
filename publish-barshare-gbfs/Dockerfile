@@ -1,8 +1,6 @@
 # This Dockerfile builds a service that regularly publishes the BARShare GBFS to the bbnavi open data portal.
 FROM minio/mc as mc
 
-FROM moqo2gbfs
-
 ENV MOQO_ACCESS_TOKEN=""
 ENV MINIO_ACCESS_KEY="" MINIO_SECRET_KEY=""
 ENV PUBLISH_INTERVAL=""
